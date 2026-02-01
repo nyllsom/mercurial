@@ -69,12 +69,6 @@ Fetch using one or more profiles:
 python -m mercurial.cli fetch-only --profile llm --profile system
 ```
 
-Fetch without keywords (category-only fetch):
-
-```bash
-python -m mercurial.cli fetch-only --no-keywords
-```
-
 Fetch then rank and print top N:
 
 ```bash
@@ -86,7 +80,7 @@ python -m mercurial.cli rank-only --profile llm --top 20
 Fetch debug (prints query and fetched papers):
 
 ```bash
-python tools/debug_fetch_arxiv.py --profile llm
+python tools/fetch_arxiv.py
 ```
 
 Rank debug (prints full breakdown + optionally dumps JSON):
@@ -95,7 +89,7 @@ Rank debug (prints full breakdown + optionally dumps JSON):
 python tools/debug_rank.py --profile llm --top 30 --dump data/debug/llm_rank.json
 ```
 
-The JSON dump is designed to be a stable intermediate artifact for future stages (DB + frontend).
+The JSON dump is designed to be a stable intermediate artifact for future stages (DB + frontend + delivery).
 
 ## ✅ Commit Message Convention (Conventional Commits)
 
@@ -169,7 +163,7 @@ CATEGORY_BONUS=0.2
 │   └── tools/
 ├── profiles/
 ├── tools/
-│   ├── debug_fetch_arxiv.py
+│   ├── fetch_arxiv.py
 │   └── debug_rank.py
 ├── README.md
 ├── requirements.txt
@@ -178,18 +172,57 @@ CATEGORY_BONUS=0.2
 
 ## 🔮 Development Roadmap
 
-Planned stages:
+Mercurial is built in **8 stages**, keeping boundaries clean and enabling layered verification.
 
-1. ✅ **arXiv Fetching** - *Completed (2026.2.1)*
-2. ✅ **Ranker** - *Completed (2026.2.1)*
-3. **LLM Digest Generation** - Generate daily/weekly summaries for top picks.
-4. **Database Integration** - Persistent storage for papers, ranks, and digests.
-5. **Email Delivery** - Automated digest delivery.
-6. **Single-File Web Frontend** - Simple local UI for browsing digests.
-7. **Frontend-Backend Decoupling** - Formal API backend + separate frontend.
-8. **Cloud Deployment** - Production deployment.
+1. ✅ **Stage 1 — arXiv Fetching** *(Completed: 2026-02-01)*
+
+   * Fetch pipeline + `fetch-only`
+   * Debug tool for query inspection
+
+2. ✅ **Stage 2 — Ranker System** *(Completed: 2026-02-01)*
+
+   * `RankedPaper` structure + explainable scoring breakdown
+   * `rank-only` + JSON debug dump
+
+3. **Stage 3 — LLM Digest Generation (Current)**
+
+   * Turn Top ranked papers into a “liquid mercury” style Markdown digest
+   * New modules (planned): `mercurial/digest/prompts.py`, `mercurial/digest/generator.py`
+   * New CLI (planned): `digest-only` (fetch → rank → digest)
+
+4. **Stage 4 — Database Integration (Idempotent + History)**
+
+   * SQLite persistence for papers + digests (+ optional rankings)
+   * Guarantee idempotency for daily runs (unless `--force`)
+   * New module (planned): `mercurial/db.py`
+
+5. **Stage 5 — Delivery: RSS + Email**
+
+   * **5A: Dual RSS Feeds (MVP delivery)**
+
+     * `papers.xml`: item = one `RankedPaper` (Top Papers feed)
+     * `digests.xml`: item = one daily digest (Daily Digest feed)
+   * **5B: Email Delivery**
+
+     * Send HTML digest via SMTP/config flags
+   * New modules (planned): `mercurial/delivery/rss.py`, `mercurial/delivery/emailer.py`
+
+6. **Stage 6 — Single-File Web Frontend**
+
+   * Local static UI to browse today’s digest + paper list
+   * Read from `data/digests/*.md` and/or generated RSS
+
+7. **Stage 7 — Service Mode (Backend/API + Public Feeds)**
+
+   * HTTP API endpoints (planned): `/api/papers`, `/api/digest`
+   * Feed endpoints (planned): `/rss/papers.xml`, `/rss/digests.xml`
+
+8. **Stage 8 — Cloud Deployment & Automation**
+
+   * Scheduled `run-daily` on server/function
+   * Multi-profile feeds (e.g. `papers-llm.xml`, `digests-systems.xml`)
+   * Production reliability: retries, logging, observability, backups
 
 ## 📄 License
 
 MIT License
-
