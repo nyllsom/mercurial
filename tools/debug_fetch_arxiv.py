@@ -1,4 +1,4 @@
-# tools/fetch_arxiv.py
+# tools/debug_fetch_arxiv.py
 from __future__ import annotations
 
 import os,sys

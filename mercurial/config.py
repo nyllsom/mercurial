@@ -31,6 +31,11 @@ class Settings:
     lookback_hours: int
     max_fetch: int
     profiles: List[str]
+    top_picks: int
+    kw_title_weight: float
+    kw_abstract_weight: float
+    recency_half_life_hours: float
+    category_bonus: float
 
 
 def load_settings(selected_profiles: Optional[List[str]] = None) -> Settings:
@@ -55,6 +60,12 @@ def load_settings(selected_profiles: Optional[List[str]] = None) -> Settings:
 
     env_profiles = _split_csv(os.getenv("PROFILES", ""))
     profiles = selected_profiles if selected_profiles is not None else env_profiles
+
+    top_picks = int(os.getenv("TOP_PICKS", "20"))
+    kw_title_weight = float(os.getenv("KW_TITLE_WEIGHT", "3.0"))
+    kw_abstract_weight = float(os.getenv("KW_ABSTRACT_WEIGHT", "1.0"))
+    recency_half_life_hours = float(os.getenv("RECENCY_HALF_LIFE_HOURS", "48"))
+    category_bonus = float(os.getenv("CATEGORY_BONUS", "0.2"))
 
     # Merge profiles
     all_categories: List[str] = list(base_categories)
@@ -90,4 +101,9 @@ def load_settings(selected_profiles: Optional[List[str]] = None) -> Settings:
         lookback_hours=lookback_hours,
         max_fetch=max_fetch,
         profiles=profiles,
+        top_picks=top_picks,
+        kw_title_weight=kw_title_weight,
+        kw_abstract_weight=kw_abstract_weight,
+        recency_half_life_hours=recency_half_life_hours,
+        category_bonus=category_bonus,
     )
