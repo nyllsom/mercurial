@@ -16,6 +16,7 @@ An elegant, configurable arXiv paper subscription and retrieval tool. It fetches
 - **Clean CLI + Debug Tools**:
   - `fetch-only` / `rank-only`
   - standalone debug scripts that can dump JSON for future DB/frontend work
+- **Conventional Commits Enforcement**: Commit messages are validated via a `commit-msg` hook (powered by `pre-commit`).
 
 ## 🚀 Quick Start
 
@@ -96,6 +97,42 @@ python tools/debug_rank.py --profile llm --top 30 --dump data/debug/llm_rank.jso
 
 The JSON dump is designed to be a stable intermediate artifact for future stages (DB + frontend).
 
+## ✅ Commit Message Convention (Conventional Commits)
+
+This repo enforces **Conventional Commits** via a `commit-msg` hook using `pre-commit`.
+If a commit message does not match the format, the commit will be rejected.
+
+### Setup (one-time)
+
+Install dev dependencies:
+
+```bash
+pip install -r requirements-dev.txt
+```
+
+Install git hooks:
+
+```bash
+pre-commit install --hook-type commit-msg --hook-type pre-commit
+```
+
+### Format
+
+```
+<type>(<scope>): <subject>
+```
+
+Examples:
+
+* `feat(ranker): implement simple keyword+recency ranker`
+* `fix(sources): handle missing arxiv version`
+* `docs(readme): update usage and roadmap`
+* `chore(dev): enforce conventional commits with pre-commit`
+
+Common scopes for this project:
+
+* `cli`, `ranker`, `sources`, `config`, `profiles`, `types`, `tools`, `readme`, `stage1`, `stage2`
+
 ## ⚙️ Ranker Scoring Model (Stage 2)
 
 Rank output is a list of `RankedPaper`:
@@ -151,7 +188,8 @@ CATEGORY_BONUS=0.2
 │   ├── debug_fetch_arxiv.py
 │   └── debug_rank.py
 ├── README.md
-└── requirements.txt
+├── requirements.txt
+└── requirements-dev.txt
 ```
 
 ## 🔮 Development Roadmap
@@ -170,3 +208,4 @@ Planned stages:
 ## 📄 License
 
 MIT License
+
