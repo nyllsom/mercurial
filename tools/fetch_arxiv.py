@@ -1,15 +1,27 @@
 # tools/fetch_arxiv.py
 from __future__ import annotations
 
+import argparse
+
 from mercurial.config import load_settings
 from mercurial.sources.arxiv_client import build_search_query, fetch_recent
 
 
 def main() -> int:
-    s = load_settings()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--profile",
+        action="append",
+        default=None,
+        help="Enable a profile under ./profiles (can repeat). Example: --profile llm --profile systems",
+    )
+    args = parser.parse_args()
+
+    s = load_settings(selected_profiles=args.profile)
     q = build_search_query(s.arxiv_categories, s.keywords)
 
     print("=== SETTINGS ===")
+    print("profiles:", s.profiles if s.profiles else "(none)")
     print("categories:", s.arxiv_categories)
     print("keywords:", s.keywords)
     print("lookback_hours:", s.lookback_hours)
