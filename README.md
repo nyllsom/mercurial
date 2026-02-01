@@ -157,33 +157,17 @@ CATEGORY_BONUS=0.2
 
 ```
 .
-├── data/
-│   └── debug/
-│       └── llm_rank.json
 ├── mercurial/
-│   ├── __init__.py
 │   ├── cli.py
 │   ├── config.py
 │   ├── profiles.py
 │   ├── types.py
 │   ├── sources/
-│   │   ├── __init__.py
 │   │   └── arxiv_client.py
 │   ├── ranker/
-│   │   ├── __init__.py
 │   │   └── simple_ranker.py
 │   └── tools/
-│       └── __init__.py
 ├── profiles/
-│   ├── embodied.env
-│   ├── hardware.env
-│   ├── llm.env
-│   ├── math.env
-│   ├── mmml.env
-│   ├── pl.env
-│   ├── rl.env
-│   ├── safety.env
-│   └── system.env
 ├── tools/
 │   ├── debug_fetch_arxiv.py
 │   └── debug_rank.py
